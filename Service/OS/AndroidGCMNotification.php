@@ -93,15 +93,17 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
         }
         $this->browser->getClient()->flush();
 
+        $decodedResponses = array();
         // Determine success
         foreach ($this->responses as $response) {
             $message = json_decode($response->getContent());
-            if ($message === null || $message->success == 0 || $message->failure > 0) {
-                return false;
-            }
+            $decodedResponses[] = array(
+                'response' => $response,
+                'message' => $message
+            );
         }
 
-        return true;
+        return $decodedResponses;
     }
 
     /**
